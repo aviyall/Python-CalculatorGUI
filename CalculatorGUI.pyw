@@ -31,6 +31,9 @@ class Window(Frame):
         # Pack all widgets into window
         self.pack(fill=BOTH, expand=1)
 
+        # Bind the backspace key
+        self.master.bind("<BackSpace>", lambda event: self.button_BACKSPACE_handler())
+
         # Setup operation variable
         operation = ""
         self.operation = operation
@@ -206,7 +209,7 @@ class Window(Frame):
         self.button_DIV = button_DIV
 
         # Configure button_EQUALS widget
-        button_EQUALS = Button(self, text="=", width=18, height=1,
+        button_EQUALS = Button(self, text="=", width=14, height=1,
                           command=self.button_EQUALS_handler, bg="grey",
                           font=("Helvetica",20,"bold"))
         button_EQUALS.configure(fg="white", relief="flat")
@@ -239,8 +242,12 @@ class Window(Frame):
                           font=("Helvetica",20,"bold"))
         button_MCLEAR.configure(fg="white", relief="flat")
         self.button_MREAD = button_MCLEAR
-
-
+        #For backspace
+        button_BACKSPACE = Button(self, text="⌫", width=4, height=1,
+                          command=self.button_BACKSPACE_handler, bg="grey",
+                          font=("Helvetica",20,"bold"))
+        button_BACKSPACE.configure(fg="white", relief="flat")
+        self.button_BACKSPACE = button_BACKSPACE
 
         # Position Widgets
         display.place(x=0, y=0)
@@ -269,7 +276,7 @@ class Window(Frame):
         button_MREAD.place(x=79 , y=59)
         button_MSUB.place(x=237 , y=59)
         button_MCLEAR.place(x=0 , y=59)
-
+        button_BACKSPACE.place(x=237, y=401) # Backspace 
 
 # EVENT HANDLERS
 
@@ -330,6 +337,8 @@ class Window(Frame):
         self.display.configure(state="normal")
         self.display.insert("end", "3.141592653")
         self.display.configure(state="readonly")
+ 
+
 
 
     def button_MPLUS_handler(self):
@@ -439,7 +448,6 @@ class Window(Frame):
         except ValueError:
             print("Needs a second Value")
             
-
         result = 0
         result = float(result)
         self.num3 = float(self.num3)
@@ -529,6 +537,13 @@ class Window(Frame):
         self.operation2 = ""
         self.display.configure(state="readonly")
 
+    def button_BACKSPACE_handler(self):
+        self.display.configure(state="normal")
+        current = self.display.get()
+        self.display.delete(0, "end")
+        self.display.insert("end", current[:-1])
+        self.display.configure(state="readonly")
+            
 
 root = Tk() # Setup the tkinter window
 
@@ -626,6 +641,10 @@ def key(event):
         app.button_PERC.configure(state=ACTIVE)
         app.button_PERC_handler()
         app.after(50, lambda: app.button_PERC.config(state=NORMAL))
+    elif press == "\b":
+        app.button_BACKSPACE.configure(state=ACTIVE)
+        app.button_BACKSPACE_handler()
+        app.after(50, lambda: app.button_BACKSPACE.config(state=NORMAL))
         
 def returnButton(event):
      app.button_EQUALS.configure(state=ACTIVE)
